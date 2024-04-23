@@ -14,17 +14,28 @@ class Board
   def place(mark, position)
     if board[position - 1] == ''
       board[position - 1] = mark
-      p board
     else
       puts 'There\'s already a symbol there. Please choose again.'
     end
+    p board
   end
 end
 
-a = Board.new
-a.place('X', 3)
-a.place('O', 5)
-a.place('X', 5)
+def play_game
+  puts 'Would you like to play tic tac toe? Y/N'
+  answer = gets
+  if answer[0].match(/y/i)
+    Board.new
+  elsif answer[0].match(/n/i)
+    puts ':( No tic tac toe'
+  else
+    puts 'Is that a yes or no?'
+    play_game
+  end
+end
+
+# run to start the game and create a board
+play_game
 
 {
   horizontal: [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
