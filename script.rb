@@ -27,17 +27,17 @@ class Board
   end
 end
 
-def play_game(restart: false)
-  puts 'Would you like to play tic tac toe? Y/N' if restart == false
+def play_game
+  puts 'Would you like to play tic tac toe? Y/N'
   answer = gets.chomp
   if answer[0].match(/y/i)
     board = Board.new(assign_symbol)
+    play_round(board)
   elsif answer[0].match(/n/i)
     puts ':( No tic tac toe'
   else
     play_game
   end
-  play_round(board)
 end
 
 def assign_symbol
@@ -53,7 +53,7 @@ def assign_symbol
 end
 
 def play_round(game_board)
-  # p game_board
+  puts 'Please choose a number from 1 to 9'
   num = gets.chomp
   # currently not matching properly, goes to the else condition of board.place when number > 9
   if num.match(/[1-9]/)
@@ -68,7 +68,8 @@ def restart
   puts 'Would you like to play again? Y/N'
   answer = gets.chomp
   if answer[0].match(/y/i)
-    play_game(restart: true)
+    board = Board.new(assign_symbol)
+    play_round(board)
   else
     puts 'Thank you for playing :)'
   end
