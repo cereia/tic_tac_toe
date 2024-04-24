@@ -25,12 +25,25 @@ def play_game
   puts 'Would you like to play tic tac toe? Y/N'
   answer = gets
   if answer[0].match(/y/i)
+    assign_symbol
     Board.new
   elsif answer[0].match(/n/i)
     puts ':( No tic tac toe'
   else
-    puts 'Is that a yes or no?'
     play_game
+  end
+end
+
+def assign_symbol
+  puts 'Do you want to be X or O?'
+  mark = gets.chomp
+  if mark.match(/x/i) || mark.match(/o/i)
+    player1 = (mark.match(/x/i) || mark.match(/o/i)).to_s.upcase
+    player2 = player1 == 'X' ? 'O' : 'X'
+    marks = { player1: player1, player2: player2 }
+    puts "Here are your players: #{marks}"
+  else
+    assign_symbol
   end
 end
 
