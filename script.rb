@@ -11,13 +11,14 @@ class Board
     @round = 0
     @player1 = hash[:player1]
     @player2 = hash[:player2]
-    puts "Player 1: #{@player1} Player 2: #{@player2}"
+    puts "Player 1: #{@player1}; Player 2: #{@player2}"
     puts "Board created: #{board}"
   end
 
-  def place(mark, position)
-    @round += 1
+  def place(position)
+    mark = round.odd? ? @player1 : @player2
     if board[position - 1] == ''
+      @round += 1
       board[position - 1] = mark
     else
       puts 'There\'s already a symbol there. Please choose again.'
@@ -26,9 +27,9 @@ class Board
   end
 end
 
-def play_game
-  puts 'Would you like to play tic tac toe? Y/N'
-  answer = gets
+def play_game(restart: false)
+  puts 'Would you like to play tic tac toe? Y/N' if restart == false
+  answer = gets.chomp
   if answer[0].match(/y/i)
     board = Board.new(assign_symbol)
   elsif answer[0].match(/n/i)
@@ -36,7 +37,7 @@ def play_game
   else
     play_game
   end
-  board
+  play_round(board)
 end
 
 def assign_symbol
@@ -48,6 +49,28 @@ def assign_symbol
     { player1: player1, player2: player2 }
   else
     assign_symbol
+  end
+end
+
+def play_round(game_board)
+  # p game_board
+  num = gets.chomp
+  # currently not matching properly, goes to the else condition of board.place when number > 9
+  if num.match(/[1-9]/)
+    game_board.place(num.to_s.to_i)
+  else
+    play_round(game_board)
+  end
+  game_board.round < 9 ? play_round(game_board) : restart
+end
+
+def restart
+  puts 'Would you like to play again? Y/N'
+  answer = gets.chomp
+  if answer[0].match(/y/i)
+    play_game(restart: true)
+  else
+    puts 'Thank you for playing :)'
   end
 end
 
