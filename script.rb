@@ -3,7 +3,7 @@
 # create a tic tac toe game where two humans can play
 # the board is meant to be displayed in the console after every player turn
 class Board
-  attr_reader :board, :round
+  attr_reader :board, :round, :player1_positions, :player2_positions
 
   def initialize(hash)
     @board = []
@@ -11,19 +11,28 @@ class Board
     @round = 0
     @player1 = hash[:player1]
     @player2 = hash[:player2]
+    @player1_positions = []
+    @player2_positions = []
     puts "Player 1: #{@player1}; Player 2: #{@player2}"
     puts "Board created: #{board}"
   end
 
   def place(position)
-    mark = round.odd? ? @player1 : @player2
     if board[position - 1] == ''
       @round += 1
+      mark = round.odd? ? @player1 : @player2
       board[position - 1] = mark
+      position_recorder(mark, position)
     else
       puts 'There\'s already a symbol there. Please choose again.'
     end
     puts "Round: #{@round} #{board}"
+  end
+
+  def position_recorder(symbol, position)
+    symbol == @player1 ? player1_positions.push(position) : player2_positions.push(position)
+    # puts "p1 positions #{player1_positions}"
+    # puts "p2 positions #{player2_positions}"
   end
 end
 
@@ -40,6 +49,7 @@ def play_game
   end
 end
 
+# move this code to Board? as part of setter?
 def assign_symbol
   puts 'Do you want to be X or O?'
   mark = gets.chomp
@@ -61,6 +71,8 @@ def play_round(game_board)
   else
     play_round(game_board)
   end
+  # puts "player 1 #{game_board.player1_positions}"
+  # puts "player 2 #{game_board.player2_positions}"
   game_board.round < 9 ? play_round(game_board) : restart
 end
 
