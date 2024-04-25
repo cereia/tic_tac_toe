@@ -27,10 +27,6 @@ class Board
     puts "Round: #{round} #{board}"
   end
 
-  def which_mark
-    round.odd? ? player1 : player2
-  end
-
   private
 
   def assign_symbol
@@ -43,6 +39,10 @@ class Board
     else
       assign_symbol
     end
+  end
+
+  def which_mark
+    round.odd? ? player1 : player2
   end
 
   def inc_round
@@ -71,12 +71,21 @@ def play_round(game_board)
   num = gets.chomp
   if num.match(/[1-9]/) && num.length == 1
     game_board.place(num.to_s.to_i)
-    game_board.round < 9 ? play_round(game_board) : restart
+    check_for_winner(game_board)
   else
     play_round(game_board)
   end
   # puts "player 1 #{game_board.player1_positions}"
   # puts "player 2 #{game_board.player2_positions}"
+end
+
+def check_for_winner(game_board)
+  # win = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
+  game_board.round < 9 ? play_round(game_board) : restart
+  # game_board.round >= 9 ? restart : play_round(game_board)
+  # check if the two position arrays contain one of the win arrays
+  # a = win.map { |index| game_board.player1_positions <= win[index] }
+  # puts a
 end
 
 def restart
@@ -103,3 +112,4 @@ play_game
 # a.place('X', 4)
 # a.place('O', 5)
 # puts a.round
+# puts a.which_mark
