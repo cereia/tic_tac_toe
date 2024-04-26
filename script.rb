@@ -75,17 +75,29 @@ def play_round(game_board)
   else
     play_round(game_board)
   end
-  # puts "player 1 #{game_board.player1_positions}"
-  # puts "player 2 #{game_board.player2_positions}"
 end
 
 def check_for_winner(game_board)
-  # win = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
-  game_board.round < 9 ? play_round(game_board) : restart
-  # game_board.round >= 9 ? restart : play_round(game_board)
-  # check if the two position arrays contain one of the win arrays
-  # a = win.map { |index| game_board.player1_positions <= win[index] }
-  # puts a
+  if game_board.round < 5
+    play_round(game_board)
+  elsif game_board.round < 9
+    winner?(game_board) == false ? play_round(game_board) : restart
+  else
+    puts 'There was a draw :('
+    restart
+  end
+end
+
+def winner?(game_board)
+  wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
+  player1 = wins.map { |win| (win - game_board.player1_positions).empty? }.any?
+  player2 = wins.map { |win| (win - game_board.player2_positions).empty? }.any?
+  if player1
+    puts 'Player1 won!'
+  elsif player2
+    puts 'Player2 won!'
+  end
+  player1 == true || player2 == true
 end
 
 def restart
