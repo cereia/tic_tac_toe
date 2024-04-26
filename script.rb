@@ -89,15 +89,19 @@ def check_for_winner(game_board)
 end
 
 def winner?(game_board)
-  wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
-  player1 = wins.map { |win| (win - game_board.player1_positions).empty? }.any?
-  player2 = wins.map { |win| (win - game_board.player2_positions).empty? }.any?
+  player1 = check_positions(game_board.player1_positions)
+  player2 = check_positions(game_board.player2_positions)
   if player1
     puts 'Player1 won!'
   elsif player2
     puts 'Player2 won!'
   end
   player1 == true || player2 == true
+end
+
+def check_positions(player_positions)
+  wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
+  wins.map { |win| (win - player_positions).empty? }.any?
 end
 
 def restart
@@ -113,15 +117,3 @@ end
 
 # run to start the game and create a board
 play_game
-
-{
-  horizontal: [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
-  vertical: [[1, 4, 7], [2, 5, 8], [3, 6, 9]],
-  diagonal: [[1, 5, 9], [3, 5, 7]]
-}
-
-# a = Board.new
-# a.place('X', 4)
-# a.place('O', 5)
-# puts a.round
-# puts a.which_mark
