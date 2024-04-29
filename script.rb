@@ -34,7 +34,6 @@ module TicTacToe
       if round.zero?
         puts "Board created: #{board}."
         puts '--------------------Board Created--------------------'
-        puts "Player 1 #{player1} goes first."
       else
         puts "Round: #{round} #{board}"
         puts "--------------------End of round #{round}--------------------"
