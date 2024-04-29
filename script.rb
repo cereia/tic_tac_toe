@@ -31,6 +31,10 @@ module TicTacToe
       puts "Round: #{round} #{board}"
     end
 
+    def which_mark
+      round.odd? ? player1 : player2
+    end
+
     private
 
     def assign_symbol
@@ -43,10 +47,6 @@ module TicTacToe
       else
         assign_symbol
       end
-    end
-
-    def which_mark
-      round.odd? ? player1 : player2
     end
 
     def inc_round
@@ -94,21 +94,6 @@ module TicTacToe
       end
     end
 
-    def winner?(game_board)
-      player1 = check_positions_for_win(game_board.player1_positions)
-      player2 = check_positions_for_win(game_board.player2_positions)
-      if player1
-        puts "Player1 (#{game_board.player1}) won!"
-      elsif player2
-        puts "Player2 (#{game_board.player2}) won!"
-      end
-      player1 == true || player2 == true
-    end
-
-    def check_positions_for_win(player_positions)
-      WINS.map { |win| (win - player_positions).empty? }.any?
-    end
-
     def restart
       puts 'Would you like to play again? Y/N'
       answer = gets.chomp
@@ -118,6 +103,54 @@ module TicTacToe
       else
         puts 'Thank you for playing :)'
       end
+    end
+
+    def winner?(game_board)
+      player1 = any_empty?(game_board.player1_positions)
+      player2 = any_empty?(game_board.player2_positions)
+
+      winner = 'Player1' if player1
+      winner = 'Player2' if player2
+      display_win(game_board, winner) unless winner.nil?
+
+      player1 == true || player2 == true
+    end
+
+    def display_win(game_board, winner)
+      win = win_positions(game_board, winner)
+      puts "#{winner} won at #{win}!"
+    end
+
+    def array_subtraction(player_positions)
+      WINS.map { |win| (win - player_positions) }
+    end
+
+    def empty_index(subtracted_arr)
+      i = 0
+      while i < subtracted_arr.length - 1
+        return i if subtracted_arr[i].empty?
+
+        i += 1
+      end
+      i
+    end
+
+    def win_positions(game_board, winner)
+      sub_arr = if winner == 'Player1'
+                  array_subtraction(game_board.player1_positions) 
+                else
+                  array_subtraction(game_board.player2_positions)
+                end
+      index = empty_index(sub_arr)
+      WINS[index]
+    end
+
+    # takes each subarray of WINS and subtracts any matching values from the player position
+    # the empty checks if these subtracted arrays are empty (returns true/false)
+    # and any checks if any of the mapped array are truthy and returns true/false
+    def any_empty?(player_positions)
+      subtracted_arr = array_subtraction(player_positions)
+      subtracted_arr.map(&:empty?).any?
     end
   end
 end
