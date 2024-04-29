@@ -16,26 +16,41 @@ module TicTacToe
       @player1_positions = []
       @player2_positions = []
       assign_symbol
-      puts "Board created: #{board}"
+      current_board
     end
 
     def place(position)
-      if board[position - 1] == ''
-        inc_round
-        mark = which_mark
-        board[position - 1] = mark
-        position_recorder(mark, position)
+      if board[position - 1].empty?
+        good_position(position)
       else
-        puts "There's already an #{board[position - 1]} at #{position}. Please choose again."
+        bad_position(position)
       end
-      puts "Round: #{round} #{board}"
-    end
-
-    def which_mark
-      round.odd? ? player1 : player2
+      current_board
     end
 
     private
+
+    def current_board
+      if round.zero?
+        puts "Board created: #{board}."
+        puts '--------------------Board Created--------------------'
+        puts "Player 1 #{player1} goes first."
+      else
+        puts "Round: #{round} #{board}"
+        puts "--------------------End of round #{round}--------------------"
+      end
+    end
+
+    def bad_position(position)
+      puts "There's already an #{board[position - 1]} at #{position}. Please choose again."
+    end
+
+    def good_position(position)
+      inc_round
+      mark = which_mark
+      board[position - 1] = mark
+      position_recorder(mark, position)
+    end
 
     def assign_symbol
       puts 'Do you want to be X or O?'
@@ -47,6 +62,10 @@ module TicTacToe
       else
         assign_symbol
       end
+    end
+
+    def which_mark
+      round.odd? ? player1 : player2
     end
 
     def inc_round
@@ -73,6 +92,7 @@ module TicTacToe
     end
 
     def play_round(game_board)
+      puts "It is #{(game_board.round + 1).odd? ? game_board.player1 : game_board.player2}'s turn."
       puts 'Please choose a number from 1 to 9.'
       num = gets.chomp
       if num.match(/[1-9]/) && num.length == 1
@@ -137,7 +157,7 @@ module TicTacToe
 
     def win_positions(game_board, winner)
       sub_arr = if winner == 'Player1'
-                  array_subtraction(game_board.player1_positions) 
+                  array_subtraction(game_board.player1_positions)
                 else
                   array_subtraction(game_board.player2_positions)
                 end
