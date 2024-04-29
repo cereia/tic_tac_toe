@@ -11,7 +11,7 @@ module TicTacToe
 
     def initialize
       @board = []
-      0.upto(8) { |i| board[i] = '' }
+      0.upto(8) { |i| board[i] = i + 1 }
       @round = 0
       @player1_positions = []
       @player2_positions = []
@@ -20,7 +20,7 @@ module TicTacToe
     end
 
     def place(position)
-      if board[position - 1].empty?
+      if board[position - 1].instance_of?(Integer)
         good_position(position)
       else
         bad_position(position)
@@ -28,14 +28,20 @@ module TicTacToe
       current_board
     end
 
+    def print_board
+      puts "#{board[0..2]} \n#{board[3..5]} \n#{board[6..]}"
+    end
+
     private
 
     def current_board
       if round.zero?
-        puts "Board created: #{board}."
+        puts 'Board created:'
+        print_board
         puts '--------------------Board Created--------------------'
       else
-        puts "Round: #{round} #{board}"
+        puts "Round: #{round}"
+        print_board
         puts "--------------------End of round #{round}--------------------"
       end
     end
