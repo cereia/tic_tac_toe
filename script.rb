@@ -80,48 +80,57 @@ module TicTacToe
   class Game
     def play_game
       puts 'Would you like to play tic tac toe? Y/N'
+      input_checker(':( No tic tac toe', method(:play_game))
+    end
+
+    private
+
+    def restart
+      puts 'Would you like to play again? Y/N'
+      input_checker('Thank you for playing :)', method(:restart))
+    end
+
+    def input_checker(no_return, method)
       answer = gets.chomp
-      play_game unless answer[0].match(/y|n/i)
       if answer[0].match(/y/i)
-        board = Board.new
-        play_round(board)
+        create_board
       elsif answer[0].match(/n/i)
-        puts ':( No tic tac toe'
+        puts no_return
+      else
+        method.call
       end
     end
 
-    def play_round(game_board)
-      puts "It is #{(game_board.round + 1).odd? ? game_board.player1 : game_board.player2}'s turn."
+    def position_input(game_board)
+      whose_turn(game_board)
       puts 'Please choose a number from 1 to 9.'
       num = gets.chomp
       if num.match(/[1-9]/) && num.length == 1
         game_board.place(num.to_i)
-        check_for_winner(game_board)
-      else
         play_round(game_board)
+      else
+        position_input(game_board)
       end
     end
 
-    def check_for_winner(game_board)
+    def whose_turn(game_board)
+      puts "It is #{(game_board.round + 1).odd? ? game_board.player1 : game_board.player2}'s turn."
+    end
+
+    def play_round(game_board)
       if game_board.round < 5
-        play_round(game_board)
+        position_input(game_board)
       elsif game_board.round < 9
-        winner?(game_board) == false ? play_round(game_board) : restart
+        winner?(game_board) == false ? position_input(game_board) : restart
       else
         puts 'There was a draw :('
         restart
       end
     end
 
-    def restart
-      puts 'Would you like to play again? Y/N'
-      answer = gets.chomp
-      if answer[0].match(/y/i)
-        board = Board.new
-        play_round(board)
-      else
-        puts 'Thank you for playing :)'
-      end
+    def create_board
+      board = Board.new
+      position_input(board)
     end
 
     def winner?(game_board)
@@ -144,6 +153,9 @@ module TicTacToe
       WINS.map { |win| (win - player_positions) }
     end
 
+    # get the index of the empty array
+    # an empty array means there is a winner, so you want to grab that empty array's index
+    # to display positions that won the game
     def empty_index(subtracted_arr)
       i = 0
       while i < subtracted_arr.length - 1
@@ -164,9 +176,8 @@ module TicTacToe
       WINS[index]
     end
 
-    # takes each subarray of WINS and subtracts any matching values from the player position
-    # the empty checks if these subtracted arrays are empty (returns true/false)
-    # and any checks if any of the mapped array are truthy and returns true/false
+    # map empty checks if these subtracted arrays are empty (returns array of true/false)
+    # any checks if there is a true in the true/false array (returns 1 true/false)
     def any_empty?(player_positions)
       subtracted_arr = array_subtraction(player_positions)
       subtracted_arr.map(&:empty?).any?
