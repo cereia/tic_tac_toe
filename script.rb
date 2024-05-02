@@ -21,15 +21,23 @@ module TicTacToe
 
     def place(position)
       if board[position - 1].instance_of?(Integer)
-        good_position(position)
+        accept_position(position)
       else
-        bad_position(position)
+        deny_position(position)
       end
       current_board
     end
 
     def print_board
-      puts "#{board[0..2]} \n#{board[3..5]} \n#{board[6..]}"
+      row1 = board[0..2]
+      row2 = board[3..5]
+      row3 = board[6..]
+      rows = [print_col_setup(row1), print_col_setup(row2), print_col_setup(row3)]
+      puts rows.join("\n----------\n")
+    end
+
+    def print_col_setup(row)
+      row.join(' | ')
     end
 
     private
@@ -46,11 +54,11 @@ module TicTacToe
       end
     end
 
-    def bad_position(position)
+    def deny_position(position)
       puts "There's already an #{board[position - 1]} at #{position}. Please choose again."
     end
 
-    def good_position(position)
+    def accept_position(position)
       inc_round
       mark = which_mark
       board[position - 1] = mark
