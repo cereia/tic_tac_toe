@@ -21,9 +21,11 @@ module TicTacToe
 
     def place(position)
       if board[position - 1].instance_of?(Integer)
-        accept_position(position)
+        mark = inc_round_and_return_player_symbol
+        board[position - 1] = mark
+        mark == player1 ? player1_positions.push(position) : player2_positions.push(position)
       else
-        deny_position(position)
+        puts "#{position} is not a free space. Please choose again."
       end
       current_board
     end
@@ -54,22 +56,11 @@ module TicTacToe
       end
     end
 
-    def deny_position(position)
-      puts "There's already an #{board[position - 1]} at #{position}. Please choose again."
-    end
-
-    def accept_position(position)
-      inc_round
-      mark = which_mark
-      board[position - 1] = mark
-      position_recorder(mark, position)
-    end
-
     def assign_symbol
       puts 'Do you want to be X or O?'
       mark = gets.chomp
-      if mark.match(/x|o/i) && mark.length == 1
-        @player1 = mark.match(/x|o/i).to_s.upcase
+      if mark.match?(/x|o/i) && mark.length == 1
+        @player1 = mark.upcase
         @player2 = player1 == 'X' ? 'O' : 'X'
         puts "Player 1: #{player1}; Player 2: #{player2}"
       else
@@ -77,16 +68,9 @@ module TicTacToe
       end
     end
 
-    def which_mark
-      round.odd? ? player1 : player2
-    end
-
-    def inc_round
+    def inc_round_and_return_player_symbol
       @round += 1
-    end
-
-    def position_recorder(symbol, position)
-      symbol == player1 ? player1_positions.push(position) : player2_positions.push(position)
+      round.odd? ? player1 : player2
     end
   end
 
@@ -106,9 +90,9 @@ module TicTacToe
 
     def input_checker(no_return, method)
       answer = gets.chomp
-      if answer[0].match(/y/i)
+      if answer.match?(/y/i)
         create_board
-      elsif answer[0].match(/n/i)
+      elsif answer.match?(/n/i)
         puts no_return
       else
         method.call
@@ -119,7 +103,7 @@ module TicTacToe
       whose_turn(game_board)
       puts 'Please choose a number from 1 to 9.'
       num = gets.chomp
-      if num.match(/[1-9]/) && num.length == 1
+      if num.match?(/[1-9]/) && num.length == 1
         game_board.place(num.to_i)
         play_round(game_board)
       else
