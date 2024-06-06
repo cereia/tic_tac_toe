@@ -7,14 +7,14 @@ module TicTacToe
 
   # board class to deal with the board's creation and methods that change the board
   class Board
-    attr_reader :board, :round, :player1, :player2, :player1_positions, :player2_positions
+    attr_reader :board, :round, :player1, :player2, :p1_positions, :p2_positions
 
     def initialize
       @board = []
       0.upto(8) { |i| board[i] = i + 1 }
       @round = 0
-      @player1_positions = []
-      @player2_positions = []
+      @p1_positions = []
+      @p2_positions = []
       assign_symbol
       current_board
     end
@@ -23,7 +23,7 @@ module TicTacToe
       if board[position - 1].instance_of?(Integer)
         mark = inc_round_and_return_player_symbol
         board[position - 1] = mark
-        mark == player1 ? player1_positions.push(position) : player2_positions.push(position)
+        mark == player1 ? p1_positions.push(position) : p2_positions.push(position)
       else
         puts "#{position} is not a free space. Please choose again."
       end
@@ -121,60 +121,32 @@ module TicTacToe
       if @game_board.round < 5
         check_position_input
       elsif @game_board.round < 9
-        winner? == false ? check_position_input : restart
+        # starting at round 5, check if there is a winner
+        winner.nil? ? check_position_input : restart
       else
         puts 'There was a draw :('
         restart
       end
     end
 
-    # returns true/false if player1 or player2 is the winner
-    def winner?
-      player1 = any_empty?(@game_board.player1_positions)
-      player2 = any_empty?(@game_board.player2_positions)
-      winner = 'Player1' if player1
-      winner = 'Player2' if player2
+    # returns the win position and the winner if a winning position array is found/win has a value
+    def winner
+      player1 = win_positions(@game_board.p1_positions)
+      player2 = win_positions(@game_board.p2_positions)
+      win = player1 unless player1.flatten.empty?
+      win = player2 unless player2.flatten.empty?
+      winner = 'Player1' if win == player1
+      winner = 'Player2' if win == player2
 
-      unless winner.nil?
-        win = win_positions(winner)
-        puts "#{winner} won at #{win}!"
-      end
+      return if win.nil?
 
-      player1 == true || player2 == true
+      puts "#{winner} won at #{win.flatten!}!"
+      win
     end
 
-    def array_subtraction(player_positions)
-      WINS.map { |win| (win - player_positions) }
-    end
-
-    # get the index of the empty array
-    # an empty array means there is a winner, so you want to grab that empty array's index
-    # to display positions that won the game
-    def empty_index(subtracted_arr)
-      i = 0
-      while i < subtracted_arr.length - 1
-        return i if subtracted_arr[i].empty?
-
-        i += 1
-      end
-      i
-    end
-
-    def win_positions(winner)
-      sub_arr = if winner == 'Player1'
-                  array_subtraction(@game_board.player1_positions)
-                else
-                  array_subtraction(@game_board.player2_positions)
-                end
-      index = empty_index(sub_arr)
-      WINS[index]
-    end
-
-    # map empty checks if these subtracted arrays are empty (returns array of true/false)
-    # any checks if there is a true in the true/false array (returns 1 true/false)
-    def any_empty?(player_positions)
-      subtracted_arr = array_subtraction(player_positions)
-      subtracted_arr.map(&:empty?).any?
+    # find and return the winning positions
+    def win_positions(player_position)
+      WINS.select { |win| win.all? { |pos| win.count(pos) <= player_position.count(pos) } }
     end
   end
 end
