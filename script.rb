@@ -133,15 +133,15 @@ module TicTacToe
     def winner
       player1 = win_positions(@game_board.p1_positions)
       player2 = win_positions(@game_board.p2_positions)
-      win = player1 unless player1.flatten.empty?
-      win = player2 unless player2.flatten.empty?
-      winner = 'Player1' if win == player1
-      winner = 'Player2' if win == player2
+      win_position_array = player1 unless player1.flatten.empty?
+      win_position_array = player2 unless player2.flatten.empty?
+      winner = 'Player1' if win_position_array == player1
+      winner = 'Player2' if win_position_array == player2
 
-      return if win.nil?
+      return if winner.nil?
 
-      puts "#{winner} won at #{win.flatten!}!"
-      win
+      puts "#{winner} won at #{win_position_array.flatten!}!"
+      win_position_array
     end
 
     # find and return the winning positions
