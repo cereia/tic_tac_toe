@@ -146,6 +146,7 @@ module TicTacToe
 
     # find and return the winning positions
     def win_positions(player_position)
+      # returns the array that contains all elements of one of the WINS arrays that match the player's positions
       WINS.select { |win| win.all? { |pos| win.count(pos) <= player_position.count(pos) } }
     end
   end
