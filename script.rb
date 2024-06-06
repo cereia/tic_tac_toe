@@ -76,12 +76,17 @@ module TicTacToe
 
   # game class that holds all the methods to run a game of Tic Tac Toe
   class Game
+    def initialize
+      @game_board = nil
+      play_game
+    end
+
+    private
+
     def play_game
       puts 'Would you like to play tic tac toe? Y/N'
       input_checker(':( No tic tac toe', method(:play_game))
     end
-
-    private
 
     def restart
       puts 'Would you like to play again? Y/N'
@@ -91,7 +96,8 @@ module TicTacToe
     def input_checker(no_return, method)
       answer = gets.chomp
       if answer.match?(/y/i)
-        create_board
+        @game_board = Board.new
+        check_position_input
       elsif answer.match?(/n/i)
         puts no_return
       else
@@ -99,52 +105,42 @@ module TicTacToe
       end
     end
 
-    def position_input(game_board)
-      whose_turn(game_board)
+    def check_position_input
+      puts "It is #{(@game_board.round + 1).odd? ? @game_board.player1 : @game_board.player2}'s turn."
       puts 'Please choose a number from 1 to 9.'
       num = gets.chomp
       if num.match?(/[1-9]/) && num.length == 1
-        game_board.place(num.to_i)
-        play_round(game_board)
+        @game_board.place(num.to_i)
+        play_round
       else
-        position_input(game_board)
+        check_position_input
       end
     end
 
-    def whose_turn(game_board)
-      puts "It is #{(game_board.round + 1).odd? ? game_board.player1 : game_board.player2}'s turn."
-    end
-
-    def play_round(game_board)
-      if game_board.round < 5
-        position_input(game_board)
-      elsif game_board.round < 9
-        winner?(game_board) == false ? position_input(game_board) : restart
+    def play_round
+      if @game_board.round < 5
+        check_position_input
+      elsif @game_board.round < 9
+        winner? == false ? check_position_input : restart
       else
         puts 'There was a draw :('
         restart
       end
     end
 
-    def create_board
-      board = Board.new
-      position_input(board)
-    end
-
-    def winner?(game_board)
-      player1 = any_empty?(game_board.player1_positions)
-      player2 = any_empty?(game_board.player2_positions)
-
+    # returns true/false if player1 or player2 is the winner
+    def winner?
+      player1 = any_empty?(@game_board.player1_positions)
+      player2 = any_empty?(@game_board.player2_positions)
       winner = 'Player1' if player1
       winner = 'Player2' if player2
-      display_win(game_board, winner) unless winner.nil?
+
+      unless winner.nil?
+        win = win_positions(winner)
+        puts "#{winner} won at #{win}!"
+      end
 
       player1 == true || player2 == true
-    end
-
-    def display_win(game_board, winner)
-      win = win_positions(game_board, winner)
-      puts "#{winner} won at #{win}!"
     end
 
     def array_subtraction(player_positions)
@@ -164,11 +160,11 @@ module TicTacToe
       i
     end
 
-    def win_positions(game_board, winner)
+    def win_positions(winner)
       sub_arr = if winner == 'Player1'
-                  array_subtraction(game_board.player1_positions)
+                  array_subtraction(@game_board.player1_positions)
                 else
-                  array_subtraction(game_board.player2_positions)
+                  array_subtraction(@game_board.player2_positions)
                 end
       index = empty_index(sub_arr)
       WINS[index]
@@ -184,4 +180,4 @@ module TicTacToe
 end
 
 # run to start the game
-TicTacToe::Game.new.play_game
+TicTacToe::Game.new
