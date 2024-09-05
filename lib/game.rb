@@ -6,54 +6,58 @@ class Game
 
   def initialize
     @game_board = nil
-    play_game
+    play_game(':( No tic tac toe')
   end
 
   private
 
-  def play_game
-    puts 'Would you like to play tic tac toe? Y/N'
-    input_checker(':( No tic tac toe', method(:play_game))
-  end
+  def play_game(no_return)
+    answer = verify_confirmation_input
 
-  def restart
-    puts 'Would you like to play again? Y/N'
-    input_checker('Thank you for playing :)', method(:restart))
-  end
-
-  def input_checker(no_return, method)
-    answer = gets.chomp
     if answer.match?(/y/i)
-      @game_board = Board.new
-      check_position_input
-    elsif answer.match?(/n/i)
-      puts no_return
+      create_board
+      place_mark
     else
-      method.call
+      puts no_return
     end
   end
 
-  def check_position_input
+  def create_board
+    @game_board = Board.new
+  end
+
+  def verify_confirmation_input
+    loop do
+      puts @game_board.nil? ? 'Would you like to play tic tac toe? Y/N' : 'Would you like to play again? Y/N'
+      answer = gets.chomp
+      return answer if answer.match?(/y|n/i)
+    end
+  end
+
+  def place_mark
     puts "It is #{(@game_board.round + 1).odd? ? @game_board.player1 : @game_board.player2}'s turn."
-    puts 'Please choose a number from 1 to 9.'
-    num = gets.chomp
-    if num.match?(/[1-9]/) && num.length == 1
-      @game_board.place(num.to_i)
-      play_round
-    else
-      check_position_input
+    num = verify_number_input
+    @game_board.place(num.to_i)
+    play_round
+  end
+
+  def verify_number_input
+    loop do
+      puts 'Please choose a number from 1 to 9.'
+      num = gets.chomp
+      return num if num.match?(/^[1-9]$/)
     end
   end
 
   def play_round
     if @game_board.round < 5
-      check_position_input
+      place_mark
     elsif @game_board.round < 9
       # starting at round 5, check if there is a winner
-      winner.nil? ? check_position_input : restart
+      winner.nil? ? place_mark : play_game('Thank you for playing :)')
     else
       puts 'There was a draw :('
-      restart
+      play_game('Thank you for playing :)')
     end
   end
 
@@ -61,12 +65,10 @@ class Game
   def winner
     player1 = win_positions(@game_board.p1_positions)
     player2 = win_positions(@game_board.p2_positions)
-    win_position_array = player1 unless player1.flatten.empty?
-    win_position_array = player2 unless player2.flatten.empty?
-    winner = 'Player1' if win_position_array == player1
-    winner = 'Player2' if win_position_array == player2
+    return if player1.nil? && player2.nil?
 
-    return if winner.nil?
+    win_position_array = player1 || player2
+    winner = player1 ? 'Player1' : 'Player2'
 
     puts "#{winner} won at #{win_position_array.flatten!}!"
     win_position_array
@@ -75,6 +77,8 @@ class Game
   # find and return the winning positions
   def win_positions(player_position)
     # returns the array that contains all elements of one of the WINS arrays that match the player's positions
-    WINS.select { |win| win.all? { |pos| win.count(pos) <= player_position.count(pos) } }
+    # returns nil if winning positions are not found
+    positions = WINS.select { |win| win.all? { |pos| win.count(pos) <= player_position.count(pos) } }
+    positions unless positions.flatten.empty?
   end
 end
