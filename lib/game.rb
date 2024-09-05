@@ -9,10 +9,8 @@ class Game
     play_game(':( No tic tac toe')
   end
 
-  private
-
   def play_game(no_return)
-    answer = verify_confirmation_input
+    answer = player_answer
 
     if answer.match?(/y/i)
       create_board
@@ -26,26 +24,36 @@ class Game
     @game_board = Board.new
   end
 
-  def verify_confirmation_input
+  def player_answer
     loop do
-      puts @game_board.nil? ? 'Would you like to play tic tac toe? Y/N' : 'Would you like to play again? Y/N'
-      answer = gets.chomp
-      return answer if answer.match?(/y|n/i)
+      answer = verify_confirmation_input(player_confirmation_input)
+      return answer if answer
+
+      puts 'Input Error!'
     end
+  end
+
+  def verify_confirmation_input(answer)
+    answer if answer.match?(/y|n/i)
   end
 
   def place_mark
     puts "It is #{(@game_board.round + 1).odd? ? @game_board.player1 : @game_board.player2}'s turn."
-    num = verify_number_input
-    @game_board.place(num.to_i)
+    num = place_position
+    @game_board.place(num)
     play_round
   end
 
-  def verify_number_input
+  def verify_number_input(num)
+    num if num.match?(/^[1-9]$/)
+  end
+
+  def place_position
     loop do
-      puts 'Please choose a number from 1 to 9.'
-      num = gets.chomp
-      return num if num.match?(/^[1-9]$/)
+      num = verify_number_input(player_number_input)
+      return num.to_i if num
+
+      puts 'Input Error!'
     end
   end
 
@@ -80,5 +88,17 @@ class Game
     # returns nil if winning positions are not found
     positions = WINS.select { |win| win.all? { |pos| win.count(pos) <= player_position.count(pos) } }
     positions unless positions.flatten.empty?
+  end
+
+  private
+
+  def player_confirmation_input
+    puts @game_board.nil? ? 'Would you like to play tic tac toe? Y/N' : 'Would you like to play again? Y/N'
+    gets.chomp
+  end
+
+  def player_number_input
+    puts 'Please choose a number from 1 to 9.'
+    gets.chomp
   end
 end
