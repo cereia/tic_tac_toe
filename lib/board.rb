@@ -16,13 +16,45 @@ class Board
 
   def place(position)
     if board[position - 1].instance_of?(Integer)
-      mark = inc_round_and_return_player_symbol
+      mark = player_symbol
       board[position - 1] = mark
       mark == player1 ? p1_positions.push(position) : p2_positions.push(position)
     else
       puts "#{position} is not a free space. Please choose again."
     end
     current_board
+  end
+
+  def player_symbol
+    @round += 1
+    round.odd? ? player1 : player2
+  end
+
+  def assign_symbol
+    mark = symbol
+    @player1 = mark.upcase
+    @player2 = player1 == 'X' ? 'O' : 'X'
+    puts "Player 1: #{player1}; Player 2: #{player2}\n\n"
+  end
+
+  def symbol
+    loop do
+      symbol = verify_symbol(player_symbol_input)
+      return symbol if symbol
+
+      puts 'Input Error!'
+    end
+  end
+
+  def verify_symbol(symbol)
+    symbol if symbol.match?(/^(x|o)$/i)
+  end
+
+  private
+
+  def player_symbol_input
+    puts 'Do you want to be X or O?'
+    gets.chomp
   end
 
   def print_board
@@ -37,34 +69,19 @@ class Board
     row.join(' | ')
   end
 
-  private
-
   def current_board
     if round.zero?
-      puts 'Board created:'
-      print_board
-      puts '--------------------Board Created--------------------'
+      puts <<~HEREDOC
+
+        #{print_board}
+        --------------------Board Created--------------------
+
+      HEREDOC
     else
       puts "Round: #{round}"
       print_board
       puts "--------------------End of round #{round}--------------------"
+      puts "\n\n"
     end
-  end
-
-  def assign_symbol
-    puts 'Do you want to be X or O?'
-    mark = gets.chomp
-    if mark.match?(/x|o/i) && mark.length == 1
-      @player1 = mark.upcase
-      @player2 = player1 == 'X' ? 'O' : 'X'
-      puts "Player 1: #{player1}; Player 2: #{player2}"
-    else
-      assign_symbol
-    end
-  end
-
-  def inc_round_and_return_player_symbol
-    @round += 1
-    round.odd? ? player1 : player2
   end
 end
