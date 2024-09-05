@@ -5,7 +5,7 @@ class Game
   WINS = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]].freeze
 
   def initialize
-    @game_board = nil
+    @board = nil
     play_game(':( No tic tac toe')
   end
 
@@ -13,6 +13,7 @@ class Game
     answer = player_answer
 
     if answer.match?(/y/i)
+      @position_history = []
       create_board
       place_mark
     else
@@ -21,7 +22,7 @@ class Game
   end
 
   def create_board
-    @game_board = Board.new
+    @board = Board.new
   end
 
   def player_answer
@@ -38,29 +39,39 @@ class Game
   end
 
   def place_mark
-    puts "It is #{(@game_board.round + 1).odd? ? @game_board.player1 : @game_board.player2}'s turn."
+    puts "Round: #{@board.round + 1}\nIt is #{(@board.round + 1).odd? ? @board.player1 : @board.player2}'s turn."
+
     num = place_position
-    @game_board.place(num)
+    @board.place(num)
+    @position_history << num
+
     play_round
   end
 
   def verify_number_input(num)
-    num if num.match?(/^[1-9]$/)
+    num.to_i if num.match?(/^[1-9]$/)
   end
 
   def place_position
     loop do
       num = verify_number_input(player_number_input)
-      return num.to_i if num
+      return num if check_for_duplicate_position(num)
 
       puts 'Input Error!'
     end
   end
 
+  def check_for_duplicate_position(position)
+    return position unless @position_history.include?(position)
+
+    puts "#{position} is not a free space. Please choose again."
+    @board.current_board
+  end
+
   def play_round
-    if @game_board.round < 5
+    if @board.round < 5
       place_mark
-    elsif @game_board.round < 9
+    elsif @board.round < 9
       # starting at round 5, check if there is a winner
       winner.nil? ? place_mark : play_game('Thank you for playing :)')
     else
@@ -71,8 +82,8 @@ class Game
 
   # returns the win position and the winner if a winning position array is found/win has a value
   def winner
-    player1 = win_positions(@game_board.p1_positions)
-    player2 = win_positions(@game_board.p2_positions)
+    player1 = win_positions(@board.p1_positions)
+    player2 = win_positions(@board.p2_positions)
     return if player1.nil? && player2.nil?
 
     win_position_array = player1 || player2
@@ -93,7 +104,7 @@ class Game
   private
 
   def player_confirmation_input
-    puts @game_board.nil? ? 'Would you like to play tic tac toe? Y/N' : 'Would you like to play again? Y/N'
+    puts @board.nil? ? 'Would you like to play tic tac toe? Y/N' : 'Would you like to play again? Y/N'
     gets.chomp
   end
 

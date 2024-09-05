@@ -15,13 +15,9 @@ class Board
   end
 
   def place(position)
-    if board[position - 1].instance_of?(Integer)
-      mark = player_symbol
-      board[position - 1] = mark
-      mark == player1 ? p1_positions.push(position) : p2_positions.push(position)
-    else
-      puts "#{position} is not a free space. Please choose again."
-    end
+    mark = player_symbol
+    board[position - 1] = mark
+    mark == player1 ? p1_positions.push(position) : p2_positions.push(position)
     current_board
   end
 
@@ -50,6 +46,24 @@ class Board
     symbol if symbol.match?(/^(x|o)$/i)
   end
 
+  def current_board
+    if round.zero?
+      puts <<~HEREDOC
+
+        #{print_board}
+        --------------------Board Created--------------------
+
+      HEREDOC
+    else
+      puts <<~HEREDOC
+        #{print_board}
+        --------------------End of round #{round}--------------------
+
+
+      HEREDOC
+    end
+  end
+
   private
 
   def player_symbol_input
@@ -67,21 +81,5 @@ class Board
 
   def print_col_setup(row)
     row.join(' | ')
-  end
-
-  def current_board
-    if round.zero?
-      puts <<~HEREDOC
-
-        #{print_board}
-        --------------------Board Created--------------------
-
-      HEREDOC
-    else
-      puts "Round: #{round}"
-      print_board
-      puts "--------------------End of round #{round}--------------------"
-      puts "\n\n"
-    end
   end
 end
