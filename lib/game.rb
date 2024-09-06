@@ -6,10 +6,10 @@ class Game
 
   def initialize
     @board = nil
-    play_game(':( No tic tac toe')
+    # play_game(':( No tic tac toe')
   end
 
-  def play_game(no_return)
+  def play_game(no_return = ':( No tic tac toe')
     answer = player_answer
 
     if answer.match?(/y/i)
