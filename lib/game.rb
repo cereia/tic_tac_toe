@@ -89,7 +89,7 @@ class Game
     win_position_array = player1 || player2
     winner = player1 ? 'Player1' : 'Player2'
 
-    puts "#{winner} won at #{win_position_array.flatten!}!"
+    puts "#{winner} won at #{win_position_array}!"
     win_position_array
   end
 
@@ -98,7 +98,7 @@ class Game
     # returns the array that contains all elements of one of the WINS arrays that match the player's positions
     # returns nil if winning positions are not found
     positions = WINS.select { |win| win.all? { |pos| win.count(pos) <= player_position.count(pos) } }
-    positions unless positions.flatten.empty?
+    positions.flatten unless positions.flatten.empty?
   end
 
   private
