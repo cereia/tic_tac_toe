@@ -70,14 +70,20 @@ describe Game do
   describe '#winner' do
     context 'when one player has winning positions' do
       subject(:game_winner) { described_class.new }
-
+      let(:board_winner) { instance_double(Board, p1_positions: [1, 5, 9], p2_positions: [2, 3]) }
       before do
-        game_winner.instance_variable_set(:@board,
-                                          instance_double(Board, p1_positions: [1, 5, 9], p2_positions: [3, 4]))
+        game_winner.instance_variable_set(:@board, board_winner)
+        # game_winner.board.instance_variable_set(:@p1_positions, [1, 5, 9])
+        # game_winner.board.instance_variable_set(:@p2_positions, [2, 3])
+        allow(board_winner).to receive(:p1_positions)
+        allow(board_winner).to receive(:p2_positions)
 
         allow(game_winner).to receive(:win_positions)
+        # allow(game_winner).to receive(:win_positions).with(game_winner.board.p1_positions)
+        # allow(game_winner).to receive(:win_positions).with(game_winner.board.p2_positions)
       end
 
+      # currently fails and returns nil when it's not supposed to
       xit 'returns the array of winning positions' do
         winner = game_winner.winner
         expect(winner).to eql([1, 5, 9])
