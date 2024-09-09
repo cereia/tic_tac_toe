@@ -157,10 +157,31 @@ describe Game do
     end
   end
 
-  describe '#update_history' do
-  end
+  describe '#check_for_duplicate_position' do
+    subject(:game_check_for_dups) { described_class.new }
+    let(:board_check_for_dups) { instance_double(Board) }
 
-  describe '#check_for_duplicate_positions' do
+    before do
+      game_check_for_dups.instance_variable_set(:@position_history, [4])
+      game_check_for_dups.instance_variable_set(:@board, board_check_for_dups)
+      allow(board_check_for_dups).to receive(:current_board)
+    end
+
+    context 'when a user inputs a unique value' do
+      it 'returns the unique value' do
+        unique_value = 7
+        position = game_check_for_dups.check_for_duplicate_position(unique_value)
+        expect(position).to eql(unique_value)
+      end
+    end
+
+    context 'when a user inputs a duplicate value' do
+      it 'returns nil' do
+        duplicate_value = 4
+        position = game_check_for_dups.check_for_duplicate_position(duplicate_value)
+        expect(position).to be_nil
+      end
+    end
   end
 
   describe '#play_round' do
