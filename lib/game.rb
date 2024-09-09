@@ -44,7 +44,7 @@ class Game
 
     num = place_position
     @board.place(num)
-    @position_history << num
+    update_history(num)
 
     play_round
   end
@@ -60,6 +60,10 @@ class Game
 
       puts 'Input Error!'
     end
+  end
+
+  def update_history(num)
+    @position_history << num
   end
 
   def check_for_duplicate_position(position)

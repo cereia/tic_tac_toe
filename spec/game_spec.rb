@@ -102,6 +102,7 @@ describe Game do
   end
 
   describe '#place_mark' do
+    # public script
   end
 
   describe '#verify_number_input' do
