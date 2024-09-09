@@ -184,9 +184,6 @@ describe Game do
     end
   end
 
-  describe '#play_round' do
-  end
-
   describe '#winner' do
     context 'when one player has winning positions' do
       subject(:game_winner) { described_class.new }

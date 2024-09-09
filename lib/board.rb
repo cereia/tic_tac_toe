@@ -10,8 +10,10 @@ class Board
     @round = 0
     @p1_positions = []
     @p2_positions = []
-    assign_symbol
-    current_board
+    # comment out assign_symbol and #current_board for testing
+    # uncomment to run
+    # assign_symbol
+    # current_board
   end
 
   def place(position)
