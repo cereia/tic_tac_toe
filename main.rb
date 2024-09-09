@@ -7,5 +7,5 @@ require_relative 'lib/board'
 require_relative 'lib/game'
 
 # uncomment to start the game
-game = Game.new
-game.play_game
+# game = Game.new
+# game.play_game

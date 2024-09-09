@@ -101,14 +101,30 @@ describe Game do
     end
   end
 
-  describe '#place_mark' do
-    # public script
-  end
-
   describe '#verify_number_input' do
+    subject(:game_verify_number) { described_class.new }
+
+    context 'when a user inputs a valid input' do
+      it 'returns valid input' do
+        user_input = '4'
+        verified_input = game_verify_number.verify_number_input(user_input)
+        expect(verified_input).to eq(4)
+      end
+    end
+
+    context 'when a user inputs an invalid input' do
+      it 'returns nil' do
+        user_input = '66'
+        verified_input = game_verify_number.verify_number_input(user_input)
+        expect(verified_input).to be_nil
+      end
+    end
   end
 
   describe '#place_position' do
+  end
+
+  describe '#update_history' do
   end
 
   describe '#check_for_duplicate_positions' do
