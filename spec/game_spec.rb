@@ -62,7 +62,7 @@ describe Game do
         game_loop_answer.player_answer
       end
 
-      it 'returns a value' do
+      it 'returns valid input' do
         expect(game_loop_answer.player_answer).not_to be_nil
       end
     end
@@ -82,6 +82,23 @@ describe Game do
   end
 
   describe '#verify_confirmation_input' do
+    subject(:game_verify_confirmation) { described_class.new }
+
+    context 'when a user inputs a valid input' do
+      it 'returns valid input' do
+        user_input = 'n'
+        verified_input = game_verify_confirmation.verify_confirmation_input(user_input)
+        expect(verified_input).to eq('n')
+      end
+    end
+
+    context 'when a user inputs an invalid input' do
+      it 'returns nil' do
+        user_input = 'x'
+        verified_input = game_verify_confirmation.verify_confirmation_input(user_input)
+        expect(verified_input).to be_nil
+      end
+    end
   end
 
   describe '#place_mark' do
