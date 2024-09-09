@@ -67,7 +67,7 @@ describe Game do
       end
     end
 
-    context 'when the user input an invalid value, and then a valid one' do
+    context 'when the user inputs an invalid value, and then a valid one' do
       before do
         invalid = 'e'
         valid = 'n'
@@ -122,6 +122,39 @@ describe Game do
   end
 
   describe '#place_position' do
+    subject(:game_loop_position) { described_class.new }
+    before do
+      game_loop_position.instance_variable_set(:@position_history, [1, 2])
+    end
+
+    context 'when the user input is valid' do
+      before do
+        valid_input = '4'
+        allow(game_loop_position).to receive(:player_number_input).and_return(valid_input)
+      end
+
+      it 'stops the loop and does not display the error message' do
+        expect(game_loop_position).not_to receive(:puts).with('Input Error!')
+        game_loop_position.place_position
+      end
+
+      it 'returns valid input' do
+        expect(game_loop_position.place_position).not_to be_nil
+      end
+    end
+
+    context 'when the user inputs an invalid value, and then a valid one' do
+      before do
+        invalid = 'e'
+        valid = '7'
+        allow(game_loop_position).to receive(:player_number_input).and_return(invalid, valid)
+      end
+
+      it 'completes a loop and displays the error message' do
+        expect(game_loop_position).to receive(:puts).with('Input Error!').once
+        game_loop_position.place_position
+      end
+    end
   end
 
   describe '#update_history' do
