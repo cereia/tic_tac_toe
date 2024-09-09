@@ -3,6 +3,8 @@
 require_relative '../lib/game'
 require_relative '../lib/board'
 
+# rubocop:disable Metrics/BlockLength
+
 describe Game do
   describe '#play_game' do
     subject(:game_start) { described_class.new }
@@ -73,18 +75,29 @@ describe Game do
       let(:board_winner) { instance_double(Board, p1_positions: [1, 5, 9], p2_positions: [2, 3]) }
       before do
         game_winner.instance_variable_set(:@board, board_winner)
-        # game_winner.board.instance_variable_set(:@p1_positions, [1, 5, 9])
-        # game_winner.board.instance_variable_set(:@p2_positions, [2, 3])
-        allow(board_winner).to receive(:p1_positions)
-        allow(board_winner).to receive(:p2_positions)
-
-        allow(game_winner).to receive(:win_positions)
-        # allow(game_winner).to receive(:win_positions).with(game_winner.board.p1_positions)
-        # allow(game_winner).to receive(:win_positions).with(game_winner.board.p2_positions)
       end
 
-      # currently fails and returns nil when it's not supposed to
-      xit 'returns the array of winning positions' do
+      it 'takes the board\'s p1_positions to pass into #win_positions' do
+        expect(board_winner).to receive(:p1_positions)
+        game_winner.winner
+      end
+
+      it 'takes the board\'s p2_positions to pass into #win_positions' do
+        expect(board_winner).to receive(:p2_positions)
+        game_winner.winner
+      end
+
+      it 'calls win_positions twice' do
+        expect(game_winner).to receive(:win_positions).twice
+        game_winner.winner
+      end
+
+      it 'puts a winning message to the console' do
+        expect(game_winner).to receive(:puts)
+        game_winner.winner
+      end
+
+      it 'returns the array of winning positions' do
         winner = game_winner.winner
         expect(winner).to eql([1, 5, 9])
       end
@@ -99,9 +112,14 @@ describe Game do
         allow(game_no_winner).to receive(:win_positions)
       end
 
-      xit 'returns nil' do
+      it 'returns nil' do
         winner = game_no_winner.winner
         expect(winner).to be_nil
+      end
+
+      it 'does not have a puts message indicating a winner' do
+        expect(game_no_winner).not_to receive(:puts)
+        game_no_winner.winner
       end
     end
   end
@@ -128,3 +146,5 @@ describe Game do
     end
   end
 end
+
+# rubocop:enable Metrics/BlockLength
