@@ -49,6 +49,36 @@ describe Game do
   end
 
   describe '#player_answer' do
+    subject(:game_loop_answer) { described_class.new }
+
+    context 'when the user input is valid' do
+      before do
+        valid_input = 'y'
+        allow(game_loop_answer).to receive(:player_confirmation_input).and_return(valid_input)
+      end
+
+      it 'stops the loop and does not display the error message' do
+        expect(game_loop_answer).not_to receive(:puts).with('Input Error!')
+        game_loop_answer.player_answer
+      end
+
+      it 'returns a value' do
+        expect(game_loop_answer.player_answer).not_to be_nil
+      end
+    end
+
+    context 'when the user input an invalid value, and then a valid one' do
+      before do
+        invalid = 'e'
+        valid = 'n'
+        allow(game_loop_answer).to receive(:player_confirmation_input).and_return(invalid, valid)
+      end
+
+      it 'completes a loop and displays the error message' do
+        expect(game_loop_answer).to receive(:puts).with('Input Error!').once
+        game_loop_answer.player_answer
+      end
+    end
   end
 
   describe '#verify_confirmation_input' do
