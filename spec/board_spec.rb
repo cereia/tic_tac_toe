@@ -2,6 +2,8 @@
 
 require_relative '../lib/board'
 
+# rubocop:disable Metrics/BlockLength
+
 describe Board do
   describe '#assign_symbol' do
     subject(:board_assign_symbol) { described_class.new }
@@ -79,4 +81,35 @@ describe Board do
       end
     end
   end
+
+  describe '#place' do
+    subject(:board_place) { described_class.new }
+
+    before do
+      board_place.instance_variable_set(:@player1, 'X')
+      board_place.instance_variable_set(:@player2, 'O')
+      board_place.instance_variable_set(:@round, 2)
+      board_place.instance_variable_set(:@p1_positions, [1])
+      board_place.instance_variable_set(:@p2_positions, [4])
+      position = 3
+      board_place.place(position)
+    end
+
+    it 'places the correct mark' do
+      board = board_place.instance_variable_get(:@board)
+      expect(board[2]).to eq('X')
+    end
+
+    it 'adds the new position to the correct player\'s positions' do
+      p1_positions = board_place.instance_variable_get(:@p1_positions)
+      expect(p1_positions).to eql([1, 3])
+    end
+
+    it 'does not change the other player\'s positions' do
+      p2_positions = board_place.instance_variable_get(:@p2_positions)
+      expect(p2_positions).to eql([4])
+    end
+  end
 end
+
+# rubocop:enable Metrics/BlockLength
