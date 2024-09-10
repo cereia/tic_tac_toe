@@ -59,4 +59,24 @@ describe Board do
       end
     end
   end
+
+  describe '#verify_symbol' do
+    subject(:board_verify_symbol) { described_class.new }
+
+    context 'when user input is valid' do
+      it 'returns valid input' do
+        symbol_input = 'X'
+        verified = board_verify_symbol.verify_symbol(symbol_input)
+        expect(verified).to eql('X')
+      end
+    end
+
+    context 'when user input is invalid' do
+      it 'returns nil' do
+        invalid = 'c'
+        verified = board_verify_symbol.verify_symbol(invalid)
+        expect(verified).to be_nil
+      end
+    end
+  end
 end
