@@ -293,6 +293,94 @@ describe Game do
       end
     end
   end
+
+  describe '#play_round' do
+    subject(:game_play_round) { described_class.new }
+
+    context 'when round < 5' do
+      let(:board_play_round_under5) do
+        instance_double(Board,
+                        round: 1,
+                        player1: 'X',
+                        player2: 'O',
+                        p1_positions: [5],
+                        p2_positions: [])
+      end
+
+      before do
+        game_play_round.instance_variable_set(:@board, board_play_round_under5)
+      end
+
+      it 'calls #place_mark' do
+        expect(game_play_round).to receive(:place_mark).once
+        game_play_round.play_round
+      end
+    end
+
+    context 'when round is between 5 and 9 and there is a winner' do
+      let(:board_play_round_under9_winner) do
+        instance_double(Board,
+                        round: 6,
+                        player1: 'X',
+                        player2: 'O',
+                        p1_positions: [7, 4, 1],
+                        p2_positions: [2, 5, 8])
+      end
+
+      before do
+        game_play_round.instance_variable_set(:@board, board_play_round_under9_winner)
+        allow(game_play_round).to receive(:player_answer).and_return('n')
+      end
+
+      it 'calls #play_game with a message' do
+        message = 'Thank you for playing :)'
+        expect(game_play_round).to receive(:play_game).with(message)
+        game_play_round.play_round
+      end
+    end
+
+    context 'when round is between 5 and 9 and there is no winner' do
+      let(:board_play_round_under9_no_winner) do
+        instance_double(Board,
+                        round: 5,
+                        player1: 'X',
+                        player2: 'O',
+                        p1_positions: [8, 4, 1],
+                        p2_positions: [2, 5])
+      end
+
+      before do
+        game_play_round.instance_variable_set(:@board, board_play_round_under9_no_winner)
+      end
+
+      it 'calls #place_mark' do
+        expect(game_play_round).to receive(:place_mark).once
+        game_play_round.play_round
+      end
+    end
+
+    context 'when round equals 9' do
+      let(:board_play_round_draw) do
+        instance_double(Board,
+                        round: 9,
+                        player1: 'X',
+                        player2: 'O',
+                        p1_positions: [1, 2, 9, 7, 6],
+                        p2_positions: [5, 4, 3, 8])
+      end
+
+      before do
+        game_play_round.instance_variable_set(:@board, board_play_round_draw)
+        allow(game_play_round).to receive(:player_answer).and_return('n')
+      end
+
+      it 'calls #play_game with a message' do
+        message = 'Thank you for playing :)'
+        expect(game_play_round).to receive(:play_game).with(message)
+        game_play_round.play_round
+      end
+    end
+  end
 end
 
 # rubocop:enable Metrics/BlockLength
