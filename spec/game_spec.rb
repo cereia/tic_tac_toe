@@ -260,6 +260,39 @@ describe Game do
       end
     end
   end
+
+  describe '#place_mark' do
+    subject(:game_place_mark) { described_class.new }
+    let(:board_place_mark) do
+      instance_double(Board,
+                      round: 2,
+                      player1: 'X',
+                      player2: 'O',
+                      p1_positions: [1],
+                      p2_positions: [6])
+    end
+
+    before do
+      position = 3
+      allow(game_place_mark).to receive(:place_position).and_return(position)
+      game_place_mark.instance_variable_set(:@position_history, [1, 6])
+      game_place_mark.instance_variable_set(:@board, board_place_mark)
+      allow(board_place_mark).to receive(:place)
+    end
+
+    context 'places a mark' do
+      it 'calls #place once' do
+        expect(board_place_mark).to receive(:place).with(3).once
+        game_place_mark.place_mark
+      end
+
+      it 'updates @position_history' do
+        game_place_mark.place_mark
+        history = game_place_mark.instance_variable_get(:@position_history)
+        expect(history).to eql([1, 6, 3])
+      end
+    end
+  end
 end
 
 # rubocop:enable Metrics/BlockLength

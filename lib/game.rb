@@ -46,7 +46,9 @@ class Game
     @board.place(num)
     @position_history << num
 
-    play_round
+    # comment out play_round for testing
+    # uncomment to run
+    # play_round
   end
 
   def verify_number_input(num)
