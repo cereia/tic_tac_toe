@@ -30,4 +30,33 @@ describe Board do
       board_assign_symbol.assign_symbol
     end
   end
+
+  describe '#symbol' do
+    subject(:board_symbol) { described_class.new }
+
+    context 'when the user inputs a valid input' do
+      before do
+        valid_input = 'x'
+        allow(board_symbol).to receive(:player_symbol_input).and_return(valid_input)
+      end
+
+      it 'returns valid input' do
+        returned_symbol = board_symbol.symbol
+        expect(returned_symbol).to eql('x')
+      end
+    end
+
+    context 'when the user inputs an invalid input and a valid input' do
+      before do
+        invalid_input = '*'
+        valid_input = 'o'
+        allow(board_symbol).to receive(:player_symbol_input).and_return(invalid_input, valid_input)
+      end
+
+      it 'completes a loop and displays the error message' do
+        expect(board_symbol).to receive(:puts).with('Input Error!')
+        board_symbol.symbol
+      end
+    end
+  end
 end
