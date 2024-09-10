@@ -48,7 +48,7 @@ class Game
 
     # comment out play_round for testing
     # uncomment to run
-    # play_round
+    play_round
   end
 
   def verify_number_input(num)

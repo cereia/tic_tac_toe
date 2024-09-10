@@ -12,8 +12,8 @@ class Board
     @p2_positions = []
     # comment out assign_symbol and #current_board for testing
     # uncomment to run
-    # assign_symbol
-    # current_board
+    assign_symbol
+    current_board
   end
 
   def place(position)
