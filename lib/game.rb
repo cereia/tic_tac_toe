@@ -46,8 +46,6 @@ class Game
     @board.place(num)
     @position_history << num
 
-    # comment out play_round for testing
-    # uncomment to run
     play_round
   end
 

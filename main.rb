@@ -7,8 +7,8 @@ require_relative 'lib/board'
 require_relative 'lib/game'
 
 # uncomment to start the game
-game = Game.new
-game.play_game
+# game = Game.new
+# game.play_game
 
 # NOTE: #play_round call in the Game class #place_mark has to be commented out for testing
 # NOTE: #assign_symbol call in the Board class #initialize has to be commented out for testing

@@ -278,6 +278,7 @@ describe Game do
       game_place_mark.instance_variable_set(:@position_history, [1, 6])
       game_place_mark.instance_variable_set(:@board, board_place_mark)
       allow(board_place_mark).to receive(:place)
+      allow(game_place_mark).to receive(:play_round)
     end
 
     context 'places a mark' do
@@ -290,6 +291,11 @@ describe Game do
         game_place_mark.place_mark
         history = game_place_mark.instance_variable_get(:@position_history)
         expect(history).to eql([1, 6, 3])
+      end
+
+      it 'calls #play_round' do
+        expect(game_place_mark).to receive(:play_round).once
+        game_place_mark.place_mark
       end
     end
   end
